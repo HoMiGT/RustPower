@@ -34,9 +34,9 @@
 > |所有权到切片引用|&a_string[..]|&a_vec[..]| 
 > |切片到所有权|a_slice.to_string()<br>a_slice.to_owned()|a_slice.to_vec()<br>a_slice.to_owned()|
 >
-> Vec类型的as_slice()的语法等价于&a_vec[..]
-> let a_vec = vec![1,2,3,4,5];
-> assert_eq!(&[1,2,3,4,5],a_vec.as_slice());
+> Vec类型的as_slice()的语法等价于&a_vec[..] 
+> let a_vec = vec![1,2,3,4,5]; 
+> assert_eq!(&[1,2,3,4,5],a_vec.as_slice()); 
 >
 > 函数参数为 **&[T]** 时, 可以同时接受 **&Vec<T>** 类型和 **&[T]**
 >
