@@ -6,9 +6,9 @@
 ## trait里可以包含***关联函数***，***关联类型***，***关联常量***
 > ```Rust
 > pub trait A{
->   const AConst:i32=3;
->   type Output;
->   fn Afn(&self);
+> const AConst:i32=3;
+>     type Output;
+>     fn Afn(&self);
 > }
 > ```
 >
@@ -21,47 +21,47 @@
 ### 关联函数
 > ```Rust
 > trait Sport{
->   fn play(&self) {};  // 花括号表示trait的关联函数的默认实现
->   fn play_mut(&mut self);  
->   fn play_own(self);  
->   fn play_some() -> Self;
+>     fn play(&self) {};  // 花括号表示trait的关联函数的默认实现
+>     fn play_mut(&mut self);  
+>     fn play_own(self);  
+>     fn play_some() -> Self;
 > }
 > ```
 ### 关联类型
 > * 在T上使用关联类型
 > ```Rust
 > pub trait Iterator{
->   type Item;
->   fn next(&mut self)->Option<Self::Item>;  // Self::Item 实际是 <Self as Iterator>::Item 
+>     type Item;
+>     fn next(&mut self)->Option<Self::Item>;  // Self::Item 实际是 <Self as Iterator>::Item 
 > }
 > ```
 > * 在约束中具化关联类型
 > ```Rust
 > trait A{
->   type Item;
+>     type Item;
 > }
 > struct Foo<T:A<Item=String>> {x:T}
 > struct B;
 > impl A for B{
->   type Item=String;
+>     type Item=String;
 > }
 > fn main(){
->   let a = Foo{x:B};
+>     let a = Foo{x:B};
 > }
 > ```
 >
 ### 关联常量
 > ```Rust
 > trait A{    
->   const LEN: u32=10;  // 相当于是一个默认值，可以实现，也可以不实现   
+>     const LEN: u32=10;  // 相当于是一个默认值，可以实现，也可以不实现   
 > }   
 > struct B;   
 > impl A for B{   
->    const LEN:u32=14;   
+>     const LEN:u32=14;   
 > }    
 > fn main(){    
->   println!("{:?}",A::LEN);   
->   println!("{:?}",<B as A>::LEN);  
+>     println!("{:?}",A::LEN);   
+>     println!("{:?}",<B as A>::LEN);  
 > }    
 > // 输出 14  14
 > ```
@@ -101,7 +101,7 @@
 > struct MyU32(u32);
 > impl Display for MyU32{}
 > impl MyU32{
->   fn get(&self)->u32{self.0}
+>     fn get(&self)->u32{self.0}
 > }
 > ```
 >
@@ -119,23 +119,23 @@
 > ```Rust
 > // Self可以用在默认类型上
 > trait A<T=Self>{
->   fn func(t:T){}
+>     fn func(t:T){}
 > }
 > trait B<T=i32>{
->   fn func2(t:T){}
+>     fn func2(t:T){}
 > }
 > struct SomeType;
 > impl A for SomeType{
->   fn func(t:SomeType) {}
+>     fn func(t:SomeType) {}
 > }
 > impl B for SomeType{
->   fn func2(t:i32) {}
+>     fn func2(t:i32) {}
 > }
 > impl A<String> for SomeType{
->   fn func(t:String) {}
+>     fn func(t:String) {}
 > }
 > impl B<String> for SomeType{
->   fn func2(t:String) {}
+>     fn func2(t:String) {}
 > }
 > ```
 ## trait类型参数更加通用，关联类型更加具体
@@ -152,12 +152,12 @@
 > impl Trait for C{}
 > fn doit(x:impl Trait){}
 > fn main(){
->   let a = A;
->   doit(a);
->   let b = B;
->   doit(b);
->   let c = C;
->   doit(c);
+>     let a = A;
+>     doit(a);
+>     let b = B;
+>     doit(b);
+>     let c = C;
+>     doit(c);
 > }
 > ```
 > * dyn trait
@@ -171,12 +171,12 @@
 > impl Trait for C{}
 > fn doit(x:&dyn Trait){} // 引用形式
 > fn main(){
->   let a = A;
->   doit(&a);
->   let b = B;
->   doit(&b);
->   let c = C;
->   doit(&c);
+>     let a = A;
+>     doit(&a);
+>     let b = B;
+>     doit(&b);
+>     let c = C;
+>     doit(&c);
 > }
 > ```
 > **impl trait和dyn trait都是消除类型参数的办法**
@@ -192,10 +192,10 @@
 > impl Trait for B{}
 > impl Trait for C{}
 > fn main(){
->   let a = A;
->   let b = B;
->   let c = C;
->   let v:Vec<&dyn Trait> = vec![&a,&b,&c];
+>     let a = A;
+>     let b = B;
+>     let c = C;
+>     let v:Vec<&dyn Trait> = vec![&a,&b,&c];
 > }
 > ```
 
@@ -204,19 +204,19 @@
 > * 安全的trait object
 > ```Rust
 > trait ObjectSafe{
->   fn foo(&self) {}
->   fn foo_mut(&mut self) {}
->   fn foo_box(self:Box<Self>) {}
+>     fn foo(&self) {}
+>     fn foo_mut(&mut self) {}
+>     fn foo_box(self:Box<Self>) {}
 > }
 > ```
 > * 不安全的trait object
 > ```Rust
 > trait UnObjectSafe{
->   const Const:i32 = 1; //不能包含关联常量
->   fn foo() {}  // 不能包含这样的关联函数
->   fn selfin(self);  // 不能将self的所有权传入
->   fn return(&self) ->Self;  // 不能返回self
->   fn typed<T>(&self,x:T) {} // 方法中不能有类型参数
+>     const Const:i32 = 1; //不能包含关联常量
+>     fn foo() {}  // 不能包含这样的关联函数
+>     fn selfin(self);  // 不能将self的所有权传入
+>     fn return(&self) ->Self;  // 不能返回self
+>     fn typed<T>(&self,x:T) {} // 方法中不能有类型参数
 > }
 > ```
 > 场景：1. 不要在trait里面定义构造函数；2. trait里面尽量定义传引用&self或&mut self的方法，不要定义传值self的方法
