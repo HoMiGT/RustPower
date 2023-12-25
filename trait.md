@@ -4,4 +4,10 @@
 > 类型参数：泛型T
 > **trait是约束和能力的体现**
 ## trait里可以包含***关联函数***，***关联类型***，***关联常量***
-
+> ```Rust
+> pub trait A{
+>   const AConst:i32=3;
+>   type Output;
+>   fn Afn(&self);
+> }
+> ```
