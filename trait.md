@@ -222,4 +222,52 @@
 > 场景：1. 不要在trait里面定义构造函数；2. trait里面尽量定义传引用&self或&mut self的方法，不要定义传值self的方法
 
 # 标准库的trait
+## Default
+> `#[derive()]`为结构体自动实现Default trait
+## Display
+> 决定一个类型如何显示
+> 侧重于展现
+## ToString 
+> ToString 侧重于类型转换    
+> 凡是实现了Display的就实现了ToString
+## Debug
+> 调试打印
+> 配对"{:?}"格式 | 美化版本格式 "{:#?}"
+## PartialEq 和 Eq
+> 比较俩个值是否相等   
+> Eq增加了自反性  
+## PartialOrd 和 Ord
+> 为排序功能准备
+## 运算符重载
+> Add trait，用来对加号(+)自定义
+## Clone 优先使用
+> 完整地克隆实例-对象的深度拷贝
+## Copy 不鼓励使用
+> 定义成clone的subtrait     
+> Copy是浅拷贝只复制一层   
+> 再赋值的时候会复制一份自身   
+> 最基础的那些类型具有Copy语义   
+## ToOwned
+> Clone更宽泛的版本    
+> 可以将引用转换为所有权实例   
+## Deref
+> 把一种类型转换为另一种类型
+> 转换条件: &、点号或其他智能指针的触发
+> 隐式调用   
+## Drop
+> 自定义垃圾清理 
+## 闭包相关trait
+> FnOnce: 闭包类型只能被调用一次
+> FnMut：能被调用多次，能修改上下文环境变量的值，有副作用    
+> Fn: 能被调用多次，但是对上下文环境变量没有副作用
+## From<T> 和 Into<T> 
+> 类型转换
+## TryFrom<T> 和 TryInto<T>
+> 类型转换的可失败版本
+## FromStr
+> 从字符串类型转换到自身
+## AsRef<T>
+> 把自身的引用类型转换成目标类型的引用
+> 显示调用
+
 
