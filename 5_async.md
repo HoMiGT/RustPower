@@ -239,4 +239,106 @@
 > // ^C
 > } 
 > ```
+> * tokio + broadcast channel(MPMC)
+> 广播模式，实现了MPMC，即多生产者多消费者，可以用来实现发布-订阅模式。每个消费者都会收到每个生产者发出的同样的消息副本。
+> [tokio 链接](https://docs.rs/crate/tokio/1.33.0)
+> * tokio + watch channel
+> 特定化的broadcast通道，只有一个生产者，多个消费者。只关心最后一个值。
+> [tokio 链接](https://docs.rs/crate/tokio/1.33.0)
+> * tokio获取任务执行的结果
+>   * 阻塞,花费时间=任务执行花费最长的时间
+> ```Rust
+> use tokio::task;
+> async fn my_bg_op(id:i32) -> String{
+>     let s = format!("String backgroud task {}.",id);
+>     println!("{}",s);
+>     s
+> }
+> #[tokio::main]
+> async fn main(){
+>     let ops = vec![1,2,3];
+>     let mut tasks = Vec::with_capacity(ops.len());
+>     for op in ops{
+>         tasks.push(tokio::spawn(my_bg_op(op)));
+>     }
+>     let mut outputs = Vec::with_capacity(tasks.len());
+>     for task in tasks{
+>         outputs.push(task.await.unwrap());
+>     }
+> }
+> ```
+> ```Rust
+> /// tokio::join!()等待所有任务完成，一起返回结果
+> use std::time::Duration;
+> use tokio::task;
+> use tokio::time;
+> #[tokio::main]
+> async fn main(){
+>     let task_a = task::spawn(async move{
+>         println!("in task_a");
+>         time::sleep(Duration::from_secs(3)).await; // 等待3s
+>         1
+>     });
+>     let task_b = task::spawn(async move{
+>         println!("in task_b");
+>         2
+>     });
+>     let task_c = task::spawn(async move{
+>         println!("in task_c");
+>         3
+>     });
+>     let (r1,r2,r3) = tokio::join!(task_a,task_b,task_c);
+>     println!("{}, {}, {}",r1.unwrap(),r2.unwrap(),r3.unwrap());
+> // 输出
+> // in task_a
+> // in task_b
+> // in task_c
+> // 1,2,3
+> }
+> ```
+>     * 优先一个任务先返回
+> ```Rust
+> /// 在一批任务中，哪个任务先执行完，就马上返回那个任务的结果，剩下的任务，要么不关心它们的执行结果，要么直接取消它们执行， 使用tokio::select!() 
+> use std::time::Duration;
+> use tokio::task;
+> use tokio::time;
+> #[tokio::main]
+> async fn main(){
+>     let task_a = task::spawn(async move{
+>         println!("in task_a")
+>         time::sleep(Duration::from_secs(3)).await;
+>         1
+>     });
+>     let task_b = task::spawn(async move{
+>         println!("in task_b");
+>         2
+>     });
+>     let task_c = task::spawn(async move{
+>         println!("in task_c");
+>         3
+>     });
+>     let ret = tokio::select!{
+>         r = task_a => r.unwrap(),
+>         r = task_b => r.unwrap(),
+>         r = task_c => r.unwrap(),
+>     }
+>     println!("{}",ret);
+> // 输出
+> // 第一次
+> // in task_b
+> // in task_a
+> // 2
+> // in task_c
+> // 第二次
+> // in task_a
+> // in task_c
+> // in task_b
+> // 2
+> // 第n次
+> // in task_a
+> // in task_c
+> // in task_b
+> // 3
+> }
+> ```
 
