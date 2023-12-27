@@ -390,5 +390,24 @@
 > }
 > ```
 > 转换后
-> `
+> ```Rust
+> struct FutureA{
+>     ...
+> }
+> impl Future for FutureA{
+>     ...
+> }
+> ```
+> trait里目前不允许定义async方法，可以使用其他方法来实现
+> ```Rust
+> use async_trait::async_trait;
+> #[async_trait]  // 该宏有些性能上的开销，1.75版本将正式推出 trait中的async fn
+> trait MyTrait{
+>     async fn f() {}
+> }
+> struct Modol;
+> #[async_trait]  // impl时也需要假如
+> impl MyTrait for Modol {}
+> ```
+> [tokio bridging with sync code](https://tokio.rs/tokio/topics/bridging)
 
