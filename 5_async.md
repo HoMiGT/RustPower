@@ -389,7 +389,7 @@
 >     10
 > }
 > ```
-> 转换后
+> 转换后    
 > ```Rust
 > struct FutureA{
 >     ...
@@ -398,7 +398,7 @@
 >     ...
 > }
 > ```
-> trait里目前不允许定义async方法，可以使用其他方法来实现
+> trait里目前不允许定义async方法，可以使用其他方法来实现    
 > ```Rust
 > use async_trait::async_trait;
 > #[async_trait]  // 该宏有些性能上的开销，1.75版本将正式推出 trait中的async fn
