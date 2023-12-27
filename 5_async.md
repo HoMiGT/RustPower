@@ -246,7 +246,7 @@
 > 特定化的broadcast通道，只有一个生产者，多个消费者。只关心最后一个值。
 > [tokio 链接](https://docs.rs/crate/tokio/1.33.0)
 > * tokio获取任务执行的结果
->   * 阻塞,花费时间=任务执行花费最长的时间
+>     * 阻塞,花费时间=任务执行花费最长的时间
 > ```Rust
 > use tokio::task;
 > async fn my_bg_op(id:i32) -> String{
@@ -296,7 +296,7 @@
 > // 1,2,3
 > }
 > ```
-     * 优先一个任务先返回
+>     * 优先一个任务先返回
 > ```Rust
 > /// 在一批任务中，哪个任务先执行完，就马上返回那个任务的结果，剩下的任务，要么不关心它们的执行结果，要么直接取消它们执行， 使用tokio::select!() 
 > use std::time::Duration;
@@ -341,4 +341,54 @@
 > // 3
 > }
 > ```
+## tokio编程注意点
+> * 基础知识汇总
+>     * async/.await语法
+>     * tokio基本概念和组件
+>     * 使用tokio编写一个网络并发应用
+>     * 使用Arc和Mutex在多个task之间共享数据
+>     * 在并发task之间使用Channel传递数据
+> * async环境中的同步代码
+> ```Rust
+> #[tokio::main]
+> async fn main(){
+>     // 此任务跑在一个单独的线程中
+>     let blocking_task = tokio::task::spawn_blocking(||{
+>         // 这里执行可以阻塞线程的代码
+>     });
+>     blocking_task.await.unwrap(); // 等待任务执行完成
+> }
+> ```
+> * 同步环境中的async代码
+> ```Rust
+> async fn foo1() ->u32{
+>     10
+> }
+> fn foo(){
+>     let rt = tokio::runtime::Builder::new_current_thread()
+>         .enable_all()
+>         .build().unwrap()
+>     let num = rt.block_on(foo1());  // 次处调用异步函数
+>     // 或者如下写法
+>     // let num = rt.block_on(async {foo1().await});
+>     println!("{num}");
+> }
+> fn main(){
+>     foo();
+> }
+> // 输出
+> // 10
+> ```
+* Rust async原理
+> * 实现原理
+> Rust的async实现实际采用的是一种无栈协程(Stackless Coroutine)方案。它的实现非常高效，性能在所有支持异步语法的语言中属于最高的那一级，非常厉害。
+> 本质将async语法编译成std Rust中的状态机，然后通过poll机制来轮训这个状态机的状态。async/.await只是语法糖    
+> async函数
+> ```Rust
+> async fn foo1() -> u32{
+>     10
+> }
+> ```
+> 转换后
+> `
 
